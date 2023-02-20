@@ -2,3 +2,27 @@ html, body {
   height: 100%;
   width: 100%;
 }
+
+
+#chessBoardDisplay{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.square{
+  position: relative;
+  display: grid;
+  place-content: center;
+  height: 60px;
+  width: 60px;
+  border: 1px solid black;
+}
+.papaya-whip{
+  background-color: papayawhip;
+  color: green;
+}
+.green{
+  background-color: green;
+  color: papayawhip;
+}
+
