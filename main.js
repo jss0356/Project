@@ -1,4 +1,5 @@
 
+
 //by default, this will create a chess game piece of type "Empty"
 class ChessPiece{
   constructor(pieceName = "Empty", pieceColor = "NoColor"){
@@ -282,6 +283,7 @@ let board = new ChessBoard
 //output the current state of the board as seen by javascript.
 console.log(board.board)
 board.renderBoard()
+
 function clickEventBoard(currX, currY) {
-  console.log("obtained x:", currX, "obtained y:", currY)
+  console.log("obtained x:", currX, "obtained y:", currY, board)
 }
