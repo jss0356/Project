@@ -11,6 +11,8 @@ html, body {
 
 .square{
   position: relative;
+  display: grid;
+  place-content: center;
   height: 60px;
   width: 60px;
   border: 1px solid black;

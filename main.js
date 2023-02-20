@@ -1,6 +1,13 @@
-import ChessPiece from './modules/ChessPiece.js'
 
-
+//by default, this will create a chess game piece of type "Empty"
+class ChessPiece{
+  constructor(pieceName = "Empty", pieceColor = "NoColor"){
+    this.pieceName = pieceName
+    this.pieceColor = pieceColor
+    this.possibleMoves = []
+    this.isChecking = false
+  }
+}
 
 class ChessBoard {
   constructor() {
