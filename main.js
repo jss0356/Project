@@ -440,8 +440,6 @@ class ChessBoard {
     let originalY = currY
     //determine what color the piece is first (used for some rule checking).
     let playingColor = this.board[currX][currY].pieceColor
-    //determine type of piece that shall be moved (again used for some rule checking)
-    let playingPieceType = this.board[currX][currY].pieceName
     //stores final result to return
     let potentialMoves = null
     //check maxmove steps ahead.
@@ -458,7 +456,7 @@ class ChessBoard {
         //if the piece on this square is the same color as the piece that is checking for their possible moves
         if (this.board[currX][currY].pieceColor === playingColor) {
           //we cannot attack our allies, so the piece can no longer move further forward.
-          return potentalMoves
+          return potentialMoves
         }
         //must be an enemy piece, push coordinate to list of potentialMoves before returning unless enemy king (we can kill enemy pieces unless its an enemy king)
         else {
@@ -597,7 +595,6 @@ function clickEventBoard(currX, currY) {
   console.log("obtained x:", currX, "obtained y:", currY)
   //if the user selected a chess piece that is of the same color as the side they are playing on.
   if ((board.board[currX][currY].pieceName !== "Empty") && (board.board[currX][currY].pieceColor === board.gameTurn)) {
-    //
   }
   board.renderBoard(currX, currY)
 }
