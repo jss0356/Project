@@ -536,6 +536,15 @@ class ChessBoard {
 
   }
   moveHandlerBishop(currX, currY) {
+    let UpRight = possibleMoves(8, currX, currY, -1, 1)
+    let UpLeft = possibleMoves(8, currX, currY, -1, -1)
+    let DownRight = possibleMoves(8, currX, currY, 1, 1)
+    let DownLeft = possibleMoves(8, currX, currY, 1, -1)
+    this.board[currX][currY].possibleMoves = UpRight
+    this.board[currX][currY].possibleMoves.push(...UpLeft)
+    this.board[currX][currY].possibleMoves.push(...DownRight)
+    this.board[currX][currY].possibleMoves.push(...DownLeft)
+
 
   }
   moveHandlerQueen(currX, currY) {
@@ -543,13 +552,37 @@ class ChessBoard {
     let Down = possibleMoves(8, currX, currY, 1, 0)
     let Left = possibleMoves(8, currX, currY, 0, -1)
     let Right = possibleMoves(8, currX, currY, -1, 1)
+    let UpRight = possibleMoves(8, currX, currY, -1, 1)
+    let UpLeft = possibleMoves(8, currX, currY, -1, -1)
+    let DownRight = possibleMoves(8, currX, currY, 1, 1)
+    let DownLeft = possibleMoves(8, currX, currY, 1, -1)
     this.board[currX][currY].possibleMoves = Up
     this.board[currX][currY].possibleMoves.push(...Down)
     this.board[currX][currY].possibleMoves.push(...Left)
     this.board[currX][currY].possibleMoves.push(...Right)
+    this.board[currX][currY].possibleMoves.push(...UpRight)
+    this.board[currX][currY].possibleMoves.push(...UpLeft)
+    this.board[currX][currY].possibleMoves.push(...DownRight)
+    this.board[currX][currY].possibleMoves.push(...DownLeft)
+
   }
   moveHandlerKing(currX, currY) {
-
+    let Up = possibleMoves(1, currX, currY, -1, 0)
+    let Down = possibleMoves(1, currX, currY, 1, 0)
+    let Left = possibleMoves(1, currX, currY, 0, -1)
+    let Right = possibleMoves(1, currX, currY, -1, 1)
+    let UpRight = possibleMoves(1, currX, currY, -1, 1)
+    let UpLeft = possibleMoves(1, currX, currY, -1, -1)
+    let DownRight = possibleMoves(1, currX, currY, 1, 1)
+    let DownLeft = possibleMoves(1, currX, currY, 1, -1)
+    this.board[currX][currY].possibleMoves = Up
+    this.board[currX][currY].possibleMoves.push(...Down)
+    this.board[currX][currY].possibleMoves.push(...Left)
+    this.board[currX][currY].possibleMoves.push(...Right)
+    this.board[currX][currY].possibleMoves.push(...UpRight)
+    this.board[currX][currY].possibleMoves.push(...UpLeft)
+    this.board[currX][currY].possibleMoves.push(...DownRight)
+    this.board[currX][currY].possibleMoves.push(...DownLeft)
   }
 
 }
