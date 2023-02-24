@@ -484,7 +484,7 @@ class ChessBoard {
 
   //all of the move handler functions listed below must do the following: Query possibleMoves for a list of possibleMoves, then from there utilize those results to update  the total list of possibleMoves of a given piece (in other words, update the corressponding piece's possibleMoves array container).
 
-  moveHandlerPawn() {
+  moveHandlerPawn(currX, currY) {
 
   }
   moveHandlerRook(currX, currY) {
@@ -492,18 +492,28 @@ class ChessBoard {
         let Down = possibleMoves(8, currX, currY, 1, 0)
         let Left = possibleMoves(8, currX, currY, 0, -1)
         let Right = possibleMoves(8, currX, currY, -1, 1)
-      this.board[currX][currY].possibleMoves.push(...Up)
+      this.board[currX][currY].possibleMoves = Up
+      this.board[currX][currY].possibleMoves.push(...Down)
+      this.board[currX][currY].possibleMoves.push(...Left)
+      this.board[currX][currY].possibleMoves.push(...Right)
   }
-  moveHandlerKnight() {
+  moveHandlerKnight(currX, currY) {
 
   }
-  moveHandlerBishop() {
+  moveHandlerBishop(currX, currY) {
 
   }
-  moveHandlerQueen() {
-
+  moveHandlerQueen(currX, currY) {
+    let Up = possibleMoves(8, currX, currY, -1, 0)
+    let Down = possibleMoves(8, currX, currY, 1, 0)
+    let Left = possibleMoves(8, currX, currY, 0, -1)
+    let Right = possibleMoves(8, currX, currY, -1, 1)
+    this.board[currX][currY].possibleMoves = Up
+    this.board[currX][currY].possibleMoves.push(...Down)
+    this.board[currX][currY].possibleMoves.push(...Left)
+    this.board[currX][currY].possibleMoves.push(...Right)
   }
-  moveHandlerKing() {
+  moveHandlerKing(currX, currY) {
 
   }
 
