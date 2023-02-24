@@ -3,12 +3,14 @@
 //by default, this will create a chess game piece of type "Empty"
 class ChessPiece{
   constructor(pieceName = "Empty", pieceColor = "NoColor"){
+    //Rook, Queen, Knight, King, Queen, Pawn, Empty
     this.pieceName = pieceName
     this.pieceColor = pieceColor
     this.possibleMoves = []
     this.isChecking = false
   }
 }
+
 
 class ChessBoard {
   constructor() {
@@ -22,6 +24,8 @@ class ChessBoard {
     this.isCheckMateBlack = false
     //true if white is in checkmate state (black won), else false
     this.isCheckMateWhite = false
+    //represents the currently selected piece of the user (by default, its empty as in no piece is selected).
+    this.selectedPiece = new ChessPiece
 
     //representation of the chess board as a 2d array of chess pieces
     this.board = new Array(8)
@@ -109,7 +113,7 @@ class ChessBoard {
 
 
   //renders the current state of the board to the webpage
-  renderBoard() {
+  initialRender() {
     //where the chessboard shall go.
     let chessBoardDisplay = document.querySelector("#chessBoardDisplay")
 
@@ -124,7 +128,6 @@ class ChessBoard {
           }
           else {
             chessBoardDisplay.innerHTML += `<div class="green square" onclick="clickEventBoard(${i},${j})"></div>`
-
           }
         }
         else {
@@ -263,7 +266,140 @@ class ChessBoard {
     }
 
   }
+  //this helper function assumes that the board is already rendered with the pieces on it.
+  clearBoard(){
+    //gather all the chess piece elements to clear.
+    let elementsToClear = document.querySelectorAll(".chess-piece")
+    //clear the gathered elements
+    for(let i = 0; i < elementsToClear.length; i++){
+      elementsToClear[i].remove()
+    }
+    //all chess squares
+    let chessSquares = document.querySelectorAll(".square")
+    //clear the selected chess square node indicator too.
+    for(let i = 0; i < chessSquares.length; i++){
+      if(chessSquares[i].classList.contains("square-selected")){
+        chessSquares[i].classList.remove("square-selected")
+      }
+    }
+    
+  }
+  
+  renderBoard(currX, currY){
+    //erase the display from the previous state.
+    this.clearBoard(currX, currY)
+          //obtain all of the squares of the chessboard
+    let chessSquares = document.querySelectorAll(".square")
 
+
+    //current chess square being analyzed.
+    let currSquare = 0
+    
+    //generate the pieces in the appropriate squares on the chess grid.
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        if(((currX * 8) + currY) == currSquare){
+          chessSquares[currSquare].classList.add("square-selected")
+        }
+        //if there is a piece that needs to be generated.
+        if (this.board[i][j].pieceName !== "Empty") {
+          //if the piece to be generated is of the color "White"
+          if (this.board[i][j].pieceColor === "White") {
+            //if a pawn element needs to be generated.
+            if (this.board[i][j].pieceName === "Pawn") {
+              let newPawnElement = document.createElement("img")
+              newPawnElement.setAttribute("src", "./sprites/pawnw.png")
+              newPawnElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newPawnElement)
+            }
+            //generate a Rook element
+            else if (this.board[i][j].pieceName === "Rook") {
+              let newRookElement = document.createElement("img")
+              newRookElement.setAttribute("src", "./sprites/rookw.png")
+              newRookElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newRookElement)
+            }
+            //generate a Knight element
+            else if (this.board[i][j].pieceName === "Knight") {
+              let newKnightElement = document.createElement("img")
+              newKnightElement.setAttribute("src", "./sprites/knightw.png")
+              newKnightElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newKnightElement)
+            }
+            //generate a Bishop element
+            else if (this.board[i][j].pieceName === "Bishop") {
+              let newBishopElement = document.createElement("img")
+              newBishopElement.setAttribute("src", "./sprites/bishopw.png")
+              newBishopElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newBishopElement)
+            }
+            //generate a Queen element
+            else if (this.board[i][j].pieceName === "Queen") {
+              let newQueenElement = document.createElement("img")
+              newQueenElement.setAttribute("src", "./sprites/queenw.png")
+              newQueenElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newQueenElement)
+            }
+            //generate a King element
+            else {
+              let newKingElement = document.createElement("img")
+              newKingElement.setAttribute("src", "./sprites/kingw.png")
+              newKingElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newKingElement)
+            }
+          }
+          //otherwise, piece to generate is of black color
+          else {
+            //if a pawn element needs to be generated.
+            if (this.board[i][j].pieceName === "Pawn") {
+              let newPawnElement = document.createElement("img")
+              newPawnElement.setAttribute("src", "./sprites/pawnb.png")
+              newPawnElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newPawnElement)
+            }
+            //generate a Rook element
+            else if (this.board[i][j].pieceName === "Rook") {
+              let newRookElement = document.createElement("img")
+              newRookElement.setAttribute("src", "./sprites/rookb.png")
+              newRookElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newRookElement)
+            }
+            //generate a Knight element
+            else if (this.board[i][j].pieceName === "Knight") {
+              let newKnightElement = document.createElement("img")
+              newKnightElement.setAttribute("src", "./sprites/knightb.png")
+              newKnightElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newKnightElement)
+            }
+            //generate a Bishop element
+            else if (this.board[i][j].pieceName === "Bishop") {
+              let newBishopElement = document.createElement("img")
+              newBishopElement.setAttribute("src", "./sprites/bishopb.png")
+              newBishopElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newBishopElement)
+            }
+            //generate a Queen element
+            else if (this.board[i][j].pieceName === "Queen") {
+              let newQueenElement = document.createElement("img")
+              newQueenElement.setAttribute("src", "./sprites/queenb.png")
+              newQueenElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newQueenElement)
+            }
+            //generate a King element
+            else {
+              let newKingElement = document.createElement("img")
+              newKingElement.setAttribute("src", "./sprites/kingb.png")
+              newKingElement.classList.add("chess-piece")
+              chessSquares[currSquare].append(newKingElement)
+            }
+          }
+        }
+        currSquare++;
+      }
+    }
+
+  }
+  
   swapTurn() {
     if (this.gameTurn === "White") {
       this.gameTurn = "Black"
@@ -273,17 +409,23 @@ class ChessBoard {
     }
   }
 
-  //black sideColor=1, white sideColor=-1
+      //addX=-1 addY=0 "Up"
   possibleMoves(maxMove, currX, currY, addX, addY) {
-    //to-do
+    for(let i = 1; i < maxMoves; i++){
+      currX = currX + (addX * i)
+      currY = currY + (addY * i)
+      
+    }
   }
 }
 
 let board = new ChessBoard
 //output the current state of the board as seen by javascript.
 console.log(board.board)
-board.renderBoard()
-
+//initially renders the board at the very start of the game.
+board.initialRender()
 function clickEventBoard(currX, currY) {
-  console.log("obtained x:", currX, "obtained y:", currY, board)
+  console.log("obtained x:", currX, "obtained y:", currY)
+  
+  board.renderBoard(currX, currY)
 }
