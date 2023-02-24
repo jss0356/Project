@@ -34,10 +34,10 @@ class ChessBoard {
 
     //all these do is act as constants to define the bound limits of the chessboard (always remaining constant for chess as the chessboard size remains static). Note that "X" represents row bounds, "Y" represents column bounds.
 
-    const X_LOWER_BOUND = 0
-    const X_UPPER_BOUND = 7
-    const Y_LOWER_BOUND = 0
-    const Y_UPPER_BOUND = 7
+    this.X_LOWER_BOUND = 0
+    this.X_UPPER_BOUND = 7
+    this.Y_LOWER_BOUND = 0
+    this.Y_UPPER_BOUND = 7
 
     //representation of the chess board as a 2d array of chess pieces
     this.board = new Array(8)
@@ -423,6 +423,7 @@ class ChessBoard {
   //returns boolean value of true if current coordinates are within the bounds of the chessBoard, false otherwise.
   inBounds(testX, testY) {
     //if within the row bounds of the chess board.
+    console.log(testX, this.X_LOWER_BOUND)
     if ((testX >= this.X_LOWER_BOUND) && (testX <= this.X_UPPER_BOUND)) {
       //and if also within the column bounds of the chess board.
       if ((testY >= this.Y_LOWER_BOUND) && (testY <= this.Y_UPPER_BOUND)) {
@@ -441,14 +442,15 @@ class ChessBoard {
     //determine what color the piece is first (used for some rule checking).
     let playingColor = this.board[currX][currY].pieceColor
     //stores final result to return
-    let potentialMoves = null
+    let potentialMoves = []
     //check maxmove steps ahead.
-    for (let i = 1; i < maxMoves; i++) {
+    for (let i = 1; i <= maxMoves; i++) {
       //update based on specified update values to update by (note that addX and addY can be negative or positive).
       currX = currX + (addX * i)
       currY = currY + (addY * i)
       //if we are not in the bounds of the chess board anymore, invalid move so return current result.
-      if (!inBounds(currX, currY)) {
+      if (!this.inBounds(currX, currY)) {
+        console.log(currX, currY)
         return potentialMoves
       }
       //if, on the current step we bump into a valid chess piece.
@@ -461,23 +463,33 @@ class ChessBoard {
         //must be an enemy piece, push coordinate to list of potentialMoves before returning unless enemy king (we can kill enemy pieces unless its an enemy king)
         else {
 
-            if (this.board[currX][currY].pieceName !== "King") {
-              potentialMoves.push({ x: currX, y: currY })
-              return potentialMoves
+          if (this.board[currX][currY].pieceName !== "King") {
+            if(!potentialMoves){
+              potentialMoves = [{ x: currX, y: currY }]
             }
-            //attacking enemy king
-            else {
-              
-                //set check flag first, before returning
-                this.board[originalX][originalY].isChecking = true
-                return potentialMoves
-              
+            else{
+              potentialMoves.push({ x: currX, y: currY })      
             }
-          
+            return potentialMoves
+          }
+          //attacking enemy king
+          else {
+
+            //set check flag first, before returning
+            this.board[originalX][originalY].isChecking = true
+            return potentialMoves
+
+          }
+
         }
       }
       //move seems to not violate any of the general chess move rules, so add to potentialMoves.
-      potentialMoves.push({ x: currX, y: currY })
+      if(!potentialMoves){
+        potentialMoves = [{ x: currX, y: currY }]
+      }
+      else{
+        potentialMoves.push({ x: currX, y: currY })      
+      }
     }
     return potentialMoves
   }
@@ -486,43 +498,47 @@ class ChessBoard {
 
   moveHandlerPawn(currX, currY) {
     let pieceSide = this.board[currX][currY].pieceColor
-    let addX = (pieceSide === "White" ? -1:1)
-    let Up1 = possibleMoves(1, currX, currY, addX, 0)
-    let Up2 = possibleMoves(2, currX, currY, addX, 0)
-    let UpRight = possibleMoves(1, currX, currY, addX, 1)
-    let UpLeft = possibleMoves(1, currX, currY, addX, -1)
-    
-    if(this.board[currX][currY].isMovedYet === false){
+    let addX = (pieceSide === "White" ? -1 : 1)
+    let Up1 = this.possibleMoves(1, currX, currY, addX, 0)
+    let Up2 = this.possibleMoves(2, currX, currY, addX, 0)
+    console.log(Up2)
+    let UpRight = this.possibleMoves(1, currX, currY, addX, 1)
+    let UpLeft = this.possibleMoves(1, currX, currY, addX, -1)
+    if (this.board[currX][currY].isMovedYet === false) {
       this.board[currX][currY].possibleMoves = Up2
       this.board[currX][currY].isMovedYet = true
     }
-    else{
+    else {
       this.board[currX][currY].possibleMoves = Up1
     }
-    this.board[currX][currY].possibleMoves.push(UpRight)
-    this.board[currX][currY].possibleMoves.push(UpLeft)
+    if(UpRight){
+      this.board[currX][currY].possibleMoves.push(...UpRight)
+    }
+    if(UpLeft){
+      this.board[currX][currY].possibleMoves.push(...UpLeft)    
+    }
   }
   moveHandlerRook(currX, currY) {
-    let Up = possibleMoves(8, currX, currY, -1, 0)
-        let Down = possibleMoves(8, currX, currY, 1, 0)
-        let Left = possibleMoves(8, currX, currY, 0, -1)
-        let Right = possibleMoves(8, currX, currY, -1, 1)
-      this.board[currX][currY].possibleMoves = Up
-      this.board[currX][currY].possibleMoves.push(...Down)
-      this.board[currX][currY].possibleMoves.push(...Left)
-      this.board[currX][currY].possibleMoves.push(...Right)
+    let Up = this.possibleMoves(8, currX, currY, -1, 0)
+    let Down = this.possibleMoves(8, currX, currY, 1, 0)
+    let Left = this.possibleMoves(8, currX, currY, 0, -1)
+    let Right = this.possibleMoves(8, currX, currY, -1, 1)
+    this.board[currX][currY].possibleMoves = Up
+    this.board[currX][currY].possibleMoves.push(...Down)
+    this.board[currX][currY].possibleMoves.push(...Left)
+    this.board[currX][currY].possibleMoves.push(...Right)
   }
   moveHandlerKnight(currX, currY) {
-    
-    let UpRight1 = possibleMoves(1, currX, currY, -1, 2)
-		let UpRight2 = possibleMoves(1, currX, currY, -2, 1)
-		let DownRight1 = possibleMoves(1, currX, currY, 1, 2)
-		let DownRight2 = possibleMoves(1, currX, currY, 2, 1)
-		let UpLeft1 = possibleMoves(1, currX, currY, -1, -2)
-		let UpLeft2 = possibleMoves(1, currX, currY, -2, -1)
-		let DownLeft1 = possibleMoves(1, currX, currY, 1, -2)
-		let DownLeft2 = possibleMoves(1, currX, currY, 2, -1)
-    
+
+    let UpRight1 = this.possibleMoves(1, currX, currY, -1, 2)
+    let UpRight2 = this.possibleMoves(1, currX, currY, -2, 1)
+    let DownRight1 = this.possibleMoves(1, currX, currY, 1, 2)
+    let DownRight2 = this.possibleMoves(1, currX, currY, 2, 1)
+    let UpLeft1 = this.possibleMoves(1, currX, currY, -1, -2)
+    let UpLeft2 = this.possibleMoves(1, currX, currY, -2, -1)
+    let DownLeft1 = this.possibleMoves(1, currX, currY, 1, -2)
+    let DownLeft2 = this.possibleMoves(1, currX, currY, 2, -1)
+
     this.board[currX][currY].possibleMoves = UpRight1
     this.board[currX][currY].possibleMoves.push(...UpRight2)
     this.board[currX][currY].possibleMoves.push(...DownRight1)
@@ -534,10 +550,10 @@ class ChessBoard {
 
   }
   moveHandlerBishop(currX, currY) {
-    let UpRight = possibleMoves(8, currX, currY, -1, 1)
-    let UpLeft = possibleMoves(8, currX, currY, -1, -1)
-    let DownRight = possibleMoves(8, currX, currY, 1, 1)
-    let DownLeft = possibleMoves(8, currX, currY, 1, -1)
+    let UpRight = this.possibleMoves(8, currX, currY, -1, 1)
+    let UpLeft = this.possibleMoves(8, currX, currY, -1, -1)
+    let DownRight = this.possibleMoves(8, currX, currY, 1, 1)
+    let DownLeft = this.possibleMoves(8, currX, currY, 1, -1)
     this.board[currX][currY].possibleMoves = UpRight
     this.board[currX][currY].possibleMoves.push(...UpLeft)
     this.board[currX][currY].possibleMoves.push(...DownRight)
@@ -546,14 +562,14 @@ class ChessBoard {
 
   }
   moveHandlerQueen(currX, currY) {
-    let Up = possibleMoves(8, currX, currY, -1, 0)
-    let Down = possibleMoves(8, currX, currY, 1, 0)
-    let Left = possibleMoves(8, currX, currY, 0, -1)
-    let Right = possibleMoves(8, currX, currY, -1, 1)
-    let UpRight = possibleMoves(8, currX, currY, -1, 1)
-    let UpLeft = possibleMoves(8, currX, currY, -1, -1)
-    let DownRight = possibleMoves(8, currX, currY, 1, 1)
-    let DownLeft = possibleMoves(8, currX, currY, 1, -1)
+    let Up = this.possibleMoves(8, currX, currY, -1, 0)
+    let Down = this.possibleMoves(8, currX, currY, 1, 0)
+    let Left = this.possibleMoves(8, currX, currY, 0, -1)
+    let Right = this.possibleMoves(8, currX, currY, -1, 1)
+    let UpRight = this.possibleMoves(8, currX, currY, -1, 1)
+    let UpLeft = this.possibleMoves(8, currX, currY, -1, -1)
+    let DownRight = this.possibleMoves(8, currX, currY, 1, 1)
+    let DownLeft = this.possibleMoves(8, currX, currY, 1, -1)
     this.board[currX][currY].possibleMoves = Up
     this.board[currX][currY].possibleMoves.push(...Down)
     this.board[currX][currY].possibleMoves.push(...Left)
@@ -565,14 +581,14 @@ class ChessBoard {
 
   }
   moveHandlerKing(currX, currY) {
-    let Up = possibleMoves(1, currX, currY, -1, 0)
-    let Down = possibleMoves(1, currX, currY, 1, 0)
-    let Left = possibleMoves(1, currX, currY, 0, -1)
-    let Right = possibleMoves(1, currX, currY, -1, 1)
-    let UpRight = possibleMoves(1, currX, currY, -1, 1)
-    let UpLeft = possibleMoves(1, currX, currY, -1, -1)
-    let DownRight = possibleMoves(1, currX, currY, 1, 1)
-    let DownLeft = possibleMoves(1, currX, currY, 1, -1)
+    let Up = this.possibleMoves(1, currX, currY, -1, 0)
+    let Down = this.possibleMoves(1, currX, currY, 1, 0)
+    let Left = this.possibleMoves(1, currX, currY, 0, -1)
+    let Right = this.possibleMoves(1, currX, currY, -1, 1)
+    let UpRight = this.possibleMoves(1, currX, currY, -1, 1)
+    let UpLeft = this.possibleMoves(1, currX, currY, -1, -1)
+    let DownRight = this.possibleMoves(1, currX, currY, 1, 1)
+    let DownLeft = this.possibleMoves(1, currX, currY, 1, -1)
     this.board[currX][currY].possibleMoves = Up
     this.board[currX][currY].possibleMoves.push(...Down)
     this.board[currX][currY].possibleMoves.push(...Left)
@@ -593,8 +609,36 @@ board.initialRender()
 function clickEventBoard(currX, currY) {
   //for reference purposes
   console.log("obtained x:", currX, "obtained y:", currY)
-  //if the user selected a chess piece that is of the same color as the side they are playing on.
+  //if the user selected a chess piece that is of the same color as the side they are playing on, determine possible valid moves.
   if ((board.board[currX][currY].pieceName !== "Empty") && (board.board[currX][currY].pieceColor === board.gameTurn)) {
+    board.selectedPiece = board.board[currX][currY]
+    if (board.selectedPiece.pieceName === "Rook") {
+      console.log("Detected Rook")
+      board.moveHandlerRook(currX, currY)
+    }
+    else if (board.selectedPiece.pieceName === "Knight") {
+      console.log("Detected Knight")
+      board.moveHandlerKnight(currX, currY)
+            console.log(board.selectedPiece.possibleMoves)
+
+    }
+    else if (board.selectedPiece.pieceName === "Bishop") {
+      console.log("Detected Bishop")
+      board.moveHandlerBishop(currX, currY)
+    }
+    else if (board.selectedPiece.pieceName === "Queen") {
+      console.log("Detected Queen")
+      board.moveHandlerQueen(currX, currY)
+    }
+    else if (board.selectedPiece.pieceName === "King") {
+      console.log("Detected King")
+      board.moveHandlerKing(currX, currY)
+    }
+    else if (board.selectedPiece.pieceName === "Pawn") {
+      console.log("Detected Pawn")
+      board.moveHandlerPawn(currX, currY)
+      console.log(board.selectedPiece.possibleMoves)
+    }
   }
   board.renderBoard(currX, currY)
 }
