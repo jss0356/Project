@@ -1,13 +1,18 @@
 
 
 //by default, this will create a chess game piece of type "Empty"
-class ChessPiece{
-  constructor(pieceName = "Empty", pieceColor = "NoColor"){
+class ChessPiece {
+  constructor(pieceName = "Empty", pieceColor = "NoColor") {
     //Rook, Queen, Knight, King, Queen, Pawn, Empty
     this.pieceName = pieceName
+    //"White", "Black", or "NoColor"
     this.pieceColor = pieceColor
+    //where all possible moves of the chess piece shall go
     this.possibleMoves = []
+    //true if current piece is checking an enemy king (IMPORTANT EXCEPTION! King Cannot Check Another King).
     this.isChecking = false
+    //true if piece was moved by the associated playing side once or more.
+    this.isMovedYet = false
   }
 }
 
@@ -26,6 +31,13 @@ class ChessBoard {
     this.isCheckMateWhite = false
     //represents the currently selected piece of the user (by default, its empty as in no piece is selected).
     this.selectedPiece = new ChessPiece
+
+    //all these do is act as constants to define the bound limits of the chessboard (always remaining constant for chess as the chessboard size remains static). Note that "X" represents row bounds, "Y" represents column bounds.
+
+    const X_LOWER_BOUND = 0
+    const X_UPPER_BOUND = 7
+    const Y_LOWER_BOUND = 0
+    const Y_UPPER_BOUND = 7
 
     //representation of the chess board as a 2d array of chess pieces
     this.board = new Array(8)
@@ -267,38 +279,38 @@ class ChessBoard {
 
   }
   //this helper function assumes that the board is already rendered with the pieces on it.
-  clearBoard(){
+  clearBoard() {
     //gather all the chess piece elements to clear.
     let elementsToClear = document.querySelectorAll(".chess-piece")
     //clear the gathered elements
-    for(let i = 0; i < elementsToClear.length; i++){
+    for (let i = 0; i < elementsToClear.length; i++) {
       elementsToClear[i].remove()
     }
     //all chess squares
     let chessSquares = document.querySelectorAll(".square")
     //clear the selected chess square node indicator too.
-    for(let i = 0; i < chessSquares.length; i++){
-      if(chessSquares[i].classList.contains("square-selected")){
+    for (let i = 0; i < chessSquares.length; i++) {
+      if (chessSquares[i].classList.contains("square-selected")) {
         chessSquares[i].classList.remove("square-selected")
       }
     }
-    
+
   }
-  
-  renderBoard(currX, currY){
+
+  renderBoard(currX, currY) {
     //erase the display from the previous state.
     this.clearBoard(currX, currY)
-          //obtain all of the squares of the chessboard
+    //obtain all of the squares of the chessboard
     let chessSquares = document.querySelectorAll(".square")
 
 
     //current chess square being analyzed.
     let currSquare = 0
-    
+
     //generate the pieces in the appropriate squares on the chess grid.
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        if(((currX * 8) + currY) == currSquare){
+        if (((currX * 8) + currY) == currSquare) {
           chessSquares[currSquare].classList.add("square-selected")
         }
         //if there is a piece that needs to be generated.
@@ -399,7 +411,7 @@ class ChessBoard {
     }
 
   }
-  
+
   swapTurn() {
     if (this.gameTurn === "White") {
       this.gameTurn = "Black"
@@ -408,24 +420,106 @@ class ChessBoard {
       this.gameTurn = "White"
     }
   }
-
-      //addX=-1 addY=0 "Up"
-  possibleMoves(maxMove, currX, currY, addX, addY) {
-    for(let i = 1; i < maxMoves; i++){
+  //returns boolean value of true if current coordinates are within the bounds of the chessBoard, false otherwise.
+  inBounds(testX, testY) {
+    //if within the row bounds of the chess board.
+    if ((testX >= this.X_LOWER_BOUND) && (testX <= this.X_UPPER_BOUND)) {
+      //and if also within the column bounds of the chess board.
+      if ((testY >= this.Y_LOWER_BOUND) && (testY <= this.Y_UPPER_BOUND)) {
+        //coordinate pair given is within chess board, so return true.
+        return true
+      }
+    }
+    //else, not within bounds so return false.
+    return false
+  }
+  //generalized function to help determine general possible moves for any given chess piece type (excluding "Empty"), done through filtering out moves that violate fundamental chess game rules (this function assumes non-check state).
+  possibleMoves(maxMoves, currX, currY, addX, addY) {
+    //used in one place to set check.
+    let originalX = currX
+    let originalY = currY
+    //determine what color the piece is first (used for some rule checking).
+    let playingColor = this.board[currX][currY].pieceColor
+    //determine type of piece that shall be moved (again used for some rule checking)
+    let playingPieceType = this.board[currX][currY].pieceName
+    //stores final result to return
+    let potentialMoves = null
+    //check maxmove steps ahead.
+    for (let i = 1; i < maxMoves; i++) {
+      //update based on specified update values to update by (note that addX and addY can be negative or positive).
       currX = currX + (addX * i)
       currY = currY + (addY * i)
-      
+      //if we are not in the bounds of the chess board anymore, invalid move so return current result.
+      if (!inBounds(currX, currY)) {
+        return potentialMoves
+      }
+      //if, on the current step we bump into a valid chess piece.
+      if (this.board[currX][currY].pieceName !== "Empty") {
+        //if the piece on this square is the same color as the piece that is checking for their possible moves
+        if (this.board[currX][currY].pieceColor === playingColor) {
+          //we cannot attack our allies, so the piece can no longer move further forward.
+          return potentalMoves
+        }
+        //must be an enemy piece, push coordinate to list of potentialMoves before returning unless enemy king (we can kill enemy pieces unless its an enemy king)
+        else {
+          if (this.board[currX][currY].pieceName !== "King") {
+            potentialMoves.push({ x: currX, y: currY })
+            return potentialMoves
+          }
+          //attacking enemy king
+          else {
+            if (playingPieceType !== "Pawn") {
+              //set check flag first, before returning
+              this.board[originalX][originalY].isChecking = true
+              return potentialMoves
+            }
+          }
+        }
+      }
+      //move seems to not violate any of the general chess move rules, so add to potentialMoves.
+      potentialMoves.push({ x: currX, y: currY })
     }
+    return potentialMoves
   }
+
+  //all of the move handler functions listed below must do the following: Query possibleMoves for a list of possibleMoves, then from there utilize those results to update  the total list of possibleMoves of a given piece (in other words, update the corressponding piece's possibleMoves array container).
+
+  moveHandlerPawn() {
+
+  }
+  moveHandlerRook(currX, currY) {
+    let Up = possibleMoves(8, currX, currY, -1, 0)
+        let Down = possibleMoves(8, currX, currY, 1, 0)
+        let Left = possibleMoves(8, currX, currY, 0, -1)
+        let Right = possibleMoves(8, currX, currY, -1, 1)
+      this.board[currX][currY].possibleMoves.push(...Up)
+  }
+  moveHandlerKnight() {
+
+  }
+  moveHandlerBishop() {
+
+  }
+  moveHandlerQueen() {
+
+  }
+  moveHandlerKing() {
+
+  }
+
 }
 
 let board = new ChessBoard
-//output the current state of the board as seen by javascript.
+//output the current state of the board as seen by javascript, for reference purposes.
 console.log(board.board)
 //initially renders the board at the very start of the game.
 board.initialRender()
 function clickEventBoard(currX, currY) {
+  //for reference purposes
   console.log("obtained x:", currX, "obtained y:", currY)
-  
+  //if the user selected a chess piece that is of the same color as the side they are playing on.
+  if ((board.board[currX][currY].pieceName !== "Empty") && (board.board[currX][currY].pieceColor === board.gameTurn)) {
+    //
+  }
   board.renderBoard(currX, currY)
 }
