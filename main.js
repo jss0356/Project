@@ -120,7 +120,6 @@ class ChessBoard {
 
       }
     }
-                    this.board[4][4] = new ChessPiece("Rook", "White")
 
   }
 
