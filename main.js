@@ -38,7 +38,7 @@ class ChessBoard {
     this.X_UPPER_BOUND = 7
     this.Y_LOWER_BOUND = 0
     this.Y_UPPER_BOUND = 7
-
+    
     //representation of the chess board as a 2d array of chess pieces
     this.board = new Array(8)
     for (let i = 0; i < 8; i++) {
@@ -48,6 +48,7 @@ class ChessBoard {
     //setting the expected chess pieces types in their respective positions based on initial chess game state
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
+        
         //first row of black side
         if (i === 0) {
           if (j === 0) {
@@ -119,7 +120,7 @@ class ChessBoard {
 
       }
     }
-
+                    this.board[4][4] = new ChessPiece("Rook", "White")
 
   }
 
@@ -423,7 +424,6 @@ class ChessBoard {
   //returns boolean value of true if current coordinates are within the bounds of the chessBoard, false otherwise.
   inBounds(testX, testY) {
     //if within the row bounds of the chess board.
-    console.log(testX, this.X_LOWER_BOUND)
     if ((testX >= this.X_LOWER_BOUND) && (testX <= this.X_UPPER_BOUND)) {
       //and if also within the column bounds of the chess board.
       if ((testY >= this.Y_LOWER_BOUND) && (testY <= this.Y_UPPER_BOUND)) {
@@ -446,11 +446,10 @@ class ChessBoard {
     //check maxmove steps ahead.
     for (let i = 1; i <= maxMoves; i++) {
       //update based on specified update values to update by (note that addX and addY can be negative or positive).
-      currX = currX + (addX * i)
-      currY = currY + (addY * i)
+      currX = originalX + (addX * i)
+      currY = originalY + (addY * i)
       //if we are not in the bounds of the chess board anymore, invalid move so return current result.
       if (!this.inBounds(currX, currY)) {
-        console.log(currX, currY)
         return potentialMoves
       }
       //if, on the current step we bump into a valid chess piece.
@@ -522,7 +521,7 @@ class ChessBoard {
     let Up = this.possibleMoves(8, currX, currY, -1, 0)
     let Down = this.possibleMoves(8, currX, currY, 1, 0)
     let Left = this.possibleMoves(8, currX, currY, 0, -1)
-    let Right = this.possibleMoves(8, currX, currY, -1, 1)
+    let Right = this.possibleMoves(8, currX, currY, 0, 1)
     this.board[currX][currY].possibleMoves = Up
     this.board[currX][currY].possibleMoves.push(...Down)
     this.board[currX][currY].possibleMoves.push(...Left)
@@ -565,7 +564,7 @@ class ChessBoard {
     let Up = this.possibleMoves(8, currX, currY, -1, 0)
     let Down = this.possibleMoves(8, currX, currY, 1, 0)
     let Left = this.possibleMoves(8, currX, currY, 0, -1)
-    let Right = this.possibleMoves(8, currX, currY, -1, 1)
+    let Right = this.possibleMoves(8, currX, currY, 0, 1)
     let UpRight = this.possibleMoves(8, currX, currY, -1, 1)
     let UpLeft = this.possibleMoves(8, currX, currY, -1, -1)
     let DownRight = this.possibleMoves(8, currX, currY, 1, 1)
@@ -584,7 +583,7 @@ class ChessBoard {
     let Up = this.possibleMoves(1, currX, currY, -1, 0)
     let Down = this.possibleMoves(1, currX, currY, 1, 0)
     let Left = this.possibleMoves(1, currX, currY, 0, -1)
-    let Right = this.possibleMoves(1, currX, currY, -1, 1)
+    let Right = this.possibleMoves(1, currX, currY, 0, 1)
     let UpRight = this.possibleMoves(1, currX, currY, -1, 1)
     let UpLeft = this.possibleMoves(1, currX, currY, -1, -1)
     let DownRight = this.possibleMoves(1, currX, currY, 1, 1)
@@ -615,6 +614,8 @@ function clickEventBoard(currX, currY) {
     if (board.selectedPiece.pieceName === "Rook") {
       console.log("Detected Rook")
       board.moveHandlerRook(currX, currY)
+            console.log(board.selectedPiece.possibleMoves)
+
     }
     else if (board.selectedPiece.pieceName === "Knight") {
       console.log("Detected Knight")
