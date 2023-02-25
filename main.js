@@ -666,12 +666,18 @@ function clickEventBoard(currX, currY) {
   if(board.selectedPiece.pieceName !== "Empty"){
     //if the user selects a square that is a part of the pieces possibleMoves, the piece must be moved to the specified location clicked on by the user.
     if( (board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY))))  != undefined ){
-      
+      //code for movement of the selected chess piece goes here      
 
 
       //This section is only after movement is done.
+      //once the piece is moved, this will set the moved flag to true if not yet set.
+      if(board.selectedPiece.isMovedYet === false){
+        board.board[board.selectedPiece.positionX][board.selectedPiece.positionY].isMovedYet = true
+      }
+      //swap turn from white->black or black->white.
       board.swapTurn()
-      board.selectedPiece = new ChessPiece
+      //set the selected piece to be equivalent to the square the user has selected.
+      board.selectedPiece = board.board[currX][currY]
     }
     else{
       board.selectedPiece = board.board[currX][currY]
