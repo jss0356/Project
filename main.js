@@ -121,6 +121,8 @@ class ChessBoard {
       }
     }
 
+    //this.board[3][4] = new ChessPiece("King", "White")
+
   }
 
 
@@ -526,7 +528,6 @@ class ChessBoard {
     let addX = (pieceSide === "White" ? -1 : 1)
     let Up1 = this.possibleMoves(1, currX, currY, addX, 0)
     let Up2 = this.possibleMoves(2, currX, currY, addX, 0)
-    console.log(Up2)
     let UpRight = this.possibleMoves(1, currX, currY, addX, 1)
     let UpLeft = this.possibleMoves(1, currX, currY, addX, -1)
     if (this.board[currX][currY].isMovedYet === false) {
@@ -639,14 +640,10 @@ function clickEventBoard(currX, currY) {
     if (board.selectedPiece.pieceName === "Rook") {
       console.log("Detected Rook")
       board.moveHandlerRook(currX, currY)
-      console.log(board.selectedPiece.possibleMoves)
-
     }
     else if (board.selectedPiece.pieceName === "Knight") {
       console.log("Detected Knight")
       board.moveHandlerKnight(currX, currY)
-      console.log(board.selectedPiece.possibleMoves)
-
     }
     else if (board.selectedPiece.pieceName === "Bishop") {
       console.log("Detected Bishop")
@@ -663,8 +660,23 @@ function clickEventBoard(currX, currY) {
     else if (board.selectedPiece.pieceName === "Pawn") {
       console.log("Detected Pawn")
       board.moveHandlerPawn(currX, currY)
-      console.log(board.selectedPiece.possibleMoves)
     }
   }
+  //if the user previously selected a piece.
+  if(board.selectedPiece.pieceName !== "Empty"){
+    console.log((board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY)))))
+    //if the user selects a square that is a part of the pieces possibleMoves
+    if( (board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY))))  != undefined ){
+      console.log("time to move this piece")
+
+      board.selectedPiece = new ChessPiece
+      board.swapTurn()
+    }
+    else{
+      board.selectedPiece = board.board[currX][currY]
+    }
+  }
+
+  console.log("Selected piece: ", board.selectedPiece)
   board.renderBoard(currX, currY)
 }
