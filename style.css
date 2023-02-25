@@ -16,8 +16,16 @@ html, body {
   height: 60px;
   width: 60px;
   border: 1px solid black;
-  
 }
+
+.possible-move-indicator{
+  height: 60px;
+  width: 60px;
+  border-radius: 60px;
+  position: absolute;
+  background-color: rgba(80, 80, 80, 0.3);
+}
+
 .papaya-whip{
   background-color: papayawhip;
   color: green;

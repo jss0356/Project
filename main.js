@@ -38,7 +38,7 @@ class ChessBoard {
     this.X_UPPER_BOUND = 7
     this.Y_LOWER_BOUND = 0
     this.Y_UPPER_BOUND = 7
-    
+
     //representation of the chess board as a 2d array of chess pieces
     this.board = new Array(8)
     for (let i = 0; i < 8; i++) {
@@ -48,7 +48,7 @@ class ChessBoard {
     //setting the expected chess pieces types in their respective positions based on initial chess game state
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        
+
         //first row of black side
         if (i === 0) {
           if (j === 0) {
@@ -282,6 +282,9 @@ class ChessBoard {
   clearBoard() {
     //gather all the chess piece elements to clear.
     let elementsToClear = document.querySelectorAll(".chess-piece")
+    //select possible move indicators to erase or clear (if there is any).
+    let possibleMoveIndicators = document.querySelectorAll(".possible-move-indicator")
+    
     //clear the gathered elements
     for (let i = 0; i < elementsToClear.length; i++) {
       elementsToClear[i].remove()
@@ -294,7 +297,11 @@ class ChessBoard {
         chessSquares[i].classList.remove("square-selected")
       }
     }
-
+    if(possibleMoveIndicators.length !== 0){
+      for(let i = 0; i < possibleMoveIndicators.length; i++){
+        possibleMoveIndicators[i].remove()    
+      }
+    }
   }
 
   renderBoard(currX, currY) {
@@ -310,7 +317,7 @@ class ChessBoard {
     //generate the pieces in the appropriate squares on the chess grid.
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        if (((currX * 8) + currY) == currSquare) {
+        if (((currX * 8) + currY) === currSquare) {
           chessSquares[currSquare].classList.add("square-selected")
         }
         //if there is a piece that needs to be generated.
@@ -409,7 +416,27 @@ class ChessBoard {
         currSquare++;
       }
     }
-
+    //if the user did not select an empty square on the chess board and the selected game piece is of their associated color.
+    if( (this.board[currX][currY].pieceName !== "Empty") && (this.board[currX][currY].pieceColor === this.gameTurn)){
+      //if there are possible moves for this piece, must then show it to the user.
+      if(this.board[currX][currY].possibleMoves.length !== 0){
+        //represents all possible moves for the piece that the user has selected.
+        let possibleMovesList = this.board[currX][currY].possibleMoves
+        //go through all the chess squares
+        for(let i = 0; i < chessSquares.length; i++){
+          //for each chess square, go through the possibleMovesList and check if that square corresponds to a marked possible move.
+          for(let j = 0; j < possibleMovesList.length; j++){
+            //if the current possibleMove coordinate pair corresponds to the current chess square, a possible move indicator must be rendered here.
+            if( (((possibleMovesList[j].x) * 8) + possibleMovesList[j].y) === i ){
+              let possibleMoveIndicator = document.createElement("div")
+              possibleMoveIndicator.classList.add("possible-move-indicator")
+              chessSquares[i].append(possibleMoveIndicator)
+            }  
+          }
+        }
+      }
+    }
+    
   }
 
   swapTurn() {
@@ -462,11 +489,11 @@ class ChessBoard {
         else {
 
           if (this.board[currX][currY].pieceName !== "King") {
-            if(!potentialMoves){
+            if (!potentialMoves) {
               potentialMoves = [{ x: currX, y: currY }]
             }
-            else{
-              potentialMoves.push({ x: currX, y: currY })      
+            else {
+              potentialMoves.push({ x: currX, y: currY })
             }
             return potentialMoves
           }
@@ -482,11 +509,11 @@ class ChessBoard {
         }
       }
       //move seems to not violate any of the general chess move rules, so add to potentialMoves.
-      if(!potentialMoves){
+      if (!potentialMoves) {
         potentialMoves = [{ x: currX, y: currY }]
       }
-      else{
-        potentialMoves.push({ x: currX, y: currY })      
+      else {
+        potentialMoves.push({ x: currX, y: currY })
       }
     }
     return potentialMoves
@@ -504,16 +531,15 @@ class ChessBoard {
     let UpLeft = this.possibleMoves(1, currX, currY, addX, -1)
     if (this.board[currX][currY].isMovedYet === false) {
       this.board[currX][currY].possibleMoves = Up2
-      this.board[currX][currY].isMovedYet = true
     }
     else {
       this.board[currX][currY].possibleMoves = Up1
     }
-    if(UpRight){
+    if (UpRight) {
       this.board[currX][currY].possibleMoves.push(...UpRight)
     }
-    if(UpLeft){
-      this.board[currX][currY].possibleMoves.push(...UpLeft)    
+    if (UpLeft) {
+      this.board[currX][currY].possibleMoves.push(...UpLeft)
     }
   }
   moveHandlerRook(currX, currY) {
@@ -613,13 +639,13 @@ function clickEventBoard(currX, currY) {
     if (board.selectedPiece.pieceName === "Rook") {
       console.log("Detected Rook")
       board.moveHandlerRook(currX, currY)
-            console.log(board.selectedPiece.possibleMoves)
+      console.log(board.selectedPiece.possibleMoves)
 
     }
     else if (board.selectedPiece.pieceName === "Knight") {
       console.log("Detected Knight")
       board.moveHandlerKnight(currX, currY)
-            console.log(board.selectedPiece.possibleMoves)
+      console.log(board.selectedPiece.possibleMoves)
 
     }
     else if (board.selectedPiece.pieceName === "Bishop") {
