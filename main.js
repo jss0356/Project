@@ -536,11 +536,17 @@ class ChessBoard {
     else {
       this.board[currX][currY].possibleMoves = Up1
     }
-    if (UpRight) {
-      this.board[currX][currY].possibleMoves.push(...UpRight)
+    if (UpRight.length != 0) {
+      let squareToAnalyze = this.board[UpRight[0].x][UpRight[0].y]
+      if(squareToAnalyze.pieceColor !== "NoColor" && squareToAnalyze.pieceColor !== pieceSide ){
+        this.board[currX][currY].possibleMoves.push(...UpRight)      
+      }
     }
-    if (UpLeft) {
-      this.board[currX][currY].possibleMoves.push(...UpLeft)
+    if (UpLeft.length != 0) {
+      let squareToAnalyze = this.board[UpLeft[0].x][UpLeft[0].y]
+      if(squareToAnalyze.pieceColor !== "NoColor" && squareToAnalyze.pieceColor !== pieceSide){
+        this.board[currX][currY].possibleMoves.push(...UpLeft)      
+      }
     }
   }
   moveHandlerRook(currX, currY) {
