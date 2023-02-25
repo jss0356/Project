@@ -638,8 +638,11 @@ console.log(board.board)
 //initially renders the board at the very start of the game.
 board.initialRender()
 function clickEventBoard(currX, currY) {
+
+  
   //for reference purposes
   console.log("obtained x:", currX, "obtained y:", currY)
+  console.log(board.board)
   //if the user selected a chess piece that is of the same color as the side they are playing on, determine possible valid moves.
   if ((board.board[currX][currY].pieceName !== "Empty") && (board.board[currX][currY].pieceColor === board.gameTurn)) {
     board.selectedPiece = board.board[currX][currY]
@@ -672,9 +675,22 @@ function clickEventBoard(currX, currY) {
   if(board.selectedPiece.pieceName !== "Empty"){
     //if the user selects a square that is a part of the pieces possibleMoves, the piece must be moved to the specified location clicked on by the user.
     if( (board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY))))  != undefined ){
-      //code for movement of the selected chess piece goes here      
+      //original x and y of the piece to be moved.
+      let originalX = board.selectedPiece.positionX
+      let originalY = board.selectedPiece.positionY
 
+      //update the old x,y values to reflect that of the new location.
+      board.selectedPiece.positionX = currX
+      board.selectedPiece.positionY = currY
+      
+      //make the piece move to the newly specified location
+      board.board[currX][currY] = board.selectedPiece
 
+      //replace old location with empty square, indicating that the piece has moved away from this square.
+      board.board[originalX][originalY] = new ChessPiece("Empty", "NoColor", originalX, originalY)
+
+      
+      
       //This section is only after movement is done.
       //once the piece is moved, this will set the moved flag to true if not yet set.
       if(board.selectedPiece.isMovedYet === false){
