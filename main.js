@@ -2,11 +2,14 @@
 
 //by default, this will create a chess game piece of type "Empty"
 class ChessPiece {
-  constructor(pieceName = "Empty", pieceColor = "NoColor") {
+  constructor(pieceName = "Empty", pieceColor = "NoColor", positionX = null, positionY = null) {
     //Rook, Queen, Knight, King, Queen, Pawn, Empty
     this.pieceName = pieceName
     //"White", "Black", or "NoColor"
     this.pieceColor = pieceColor
+    //represents the pieces current position on the board (null until placed on board)
+    this.positionX = positionX
+    this.positionY = positionY
     //where all possible moves of the chess piece shall go
     this.possibleMoves = []
     //true if current piece is checking an enemy king (IMPORTANT EXCEPTION! King Cannot Check Another King).
@@ -52,77 +55,74 @@ class ChessBoard {
         //first row of black side
         if (i === 0) {
           if (j === 0) {
-            this.board[i][j] = new ChessPiece("Rook", "Black")
+            this.board[i][j] = new ChessPiece("Rook", "Black", i, j)
           }
           else if (j === 1) {
-            this.board[i][j] = new ChessPiece("Knight", "Black")
+            this.board[i][j] = new ChessPiece("Knight", "Black", i, j)
           }
           else if (j === 2) {
-            this.board[i][j] = new ChessPiece("Bishop", "Black")
+            this.board[i][j] = new ChessPiece("Bishop", "Black", i, j)
           }
           else if (j === 3) {
-            this.board[i][j] = new ChessPiece("Queen", "Black")
+            this.board[i][j] = new ChessPiece("Queen", "Black", i, j)
           }
           else if (j === 4) {
-            this.board[i][j] = new ChessPiece("King", "Black")
+            this.board[i][j] = new ChessPiece("King", "Black", i, j)
           }
           else if (j === 5) {
-            this.board[i][j] = new ChessPiece("Bishop", "Black")
+            this.board[i][j] = new ChessPiece("Bishop", "Black", i, j)
           }
           else if (j === 6) {
-            this.board[i][j] = new ChessPiece("Knight", "Black")
+            this.board[i][j] = new ChessPiece("Knight", "Black", i, j)
           }
           //j === 7
           else {
-            this.board[i][j] = new ChessPiece("Rook", "Black")
+            this.board[i][j] = new ChessPiece("Rook", "Black", i, j)
           }
         }
 
         //full row of black pawns
         else if (i === 1) {
-          this.board[i][j] = new ChessPiece("Pawn", "Black")
+          this.board[i][j] = new ChessPiece("Pawn", "Black", i, j)
         }
         //white side, second row which is all white pawns
         else if (i === 6) {
-          this.board[i][j] = new ChessPiece("Pawn", "White")
+          this.board[i][j] = new ChessPiece("Pawn", "White", i, j)
         }
         else if (i === 7) {
           if (j === 0) {
-            this.board[i][j] = new ChessPiece("Rook", "White")
+            this.board[i][j] = new ChessPiece("Rook", "White", i, j)
           }
           else if (j === 1) {
-            this.board[i][j] = new ChessPiece("Knight", "White")
+            this.board[i][j] = new ChessPiece("Knight", "White", i, j)
           }
           else if (j === 2) {
-            this.board[i][j] = new ChessPiece("Bishop", "White")
+            this.board[i][j] = new ChessPiece("Bishop", "White", i, j)
           }
           else if (j === 3) {
-            this.board[i][j] = new ChessPiece("Queen", "White")
+            this.board[i][j] = new ChessPiece("Queen", "White", i, j)
           }
           else if (j === 4) {
-            this.board[i][j] = new ChessPiece("King", "White")
+            this.board[i][j] = new ChessPiece("King", "White", i, j)
           }
           else if (j === 5) {
-            this.board[i][j] = new ChessPiece("Bishop", "White")
+            this.board[i][j] = new ChessPiece("Bishop", "White", i, j)
           }
           else if (j === 6) {
-            this.board[i][j] = new ChessPiece("Knight", "White")
+            this.board[i][j] = new ChessPiece("Knight", "White", i, j)
           }
           //j === 7
           else {
-            this.board[i][j] = new ChessPiece("Rook", "White")
+            this.board[i][j] = new ChessPiece("Rook", "White", i, j)
           }
         }
         //otherwise, the square contains no piece there so set as empty.
         else {
-          this.board[i][j] = new ChessPiece()
+          this.board[i][j] = new ChessPiece("Empty", "NoColor", i, j)
         }
 
       }
     }
-
-    //this.board[3][4] = new ChessPiece("King", "White")
-
   }
 
 
@@ -664,13 +664,14 @@ function clickEventBoard(currX, currY) {
   }
   //if the user previously selected a piece.
   if(board.selectedPiece.pieceName !== "Empty"){
-    console.log((board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY)))))
-    //if the user selects a square that is a part of the pieces possibleMoves
+    //if the user selects a square that is a part of the pieces possibleMoves, the piece must be moved to the specified location clicked on by the user.
     if( (board.selectedPiece.possibleMoves.find(({x,y}) => ((x === currX) && (y === currY))))  != undefined ){
-      console.log("time to move this piece")
+      
 
-      board.selectedPiece = new ChessPiece
+
+      //This section is only after movement is done.
       board.swapTurn()
+      board.selectedPiece = new ChessPiece
     }
     else{
       board.selectedPiece = board.board[currX][currY]
@@ -679,4 +680,5 @@ function clickEventBoard(currX, currY) {
 
   console.log("Selected piece: ", board.selectedPiece)
   board.renderBoard(currX, currY)
+  
 }
