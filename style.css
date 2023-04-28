@@ -7,6 +7,7 @@ html, body {
 
 #chessBoardDisplay{
   display: flex;
+  
   position: relative;
   flex-wrap: wrap;
 }
@@ -18,7 +19,7 @@ html, body {
   color: red;
   font-family: Helvetica, sans-serif, Arial;
   left: -999px;
-  top: 350px;
+  top: 50%;
   text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black; 
 }
 .checkPromptBlack{
@@ -27,7 +28,7 @@ html, body {
   z-index: 1;
   color: red;
   font-family: Helvetica, sans-serif, Arial;
-  top: 100px;
+  top: 50%;
   left: -999px;
   text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black; 
 
@@ -40,7 +41,7 @@ html, body {
   color: red;
   font-family: Helvetica, sans-serif, Arial;
   left: -999px;
-  top: 350px;
+  top: 50%;
 
   text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black; 
 
@@ -52,7 +53,7 @@ html, body {
   z-index: 1;
   color: red;
   font-family: Helvetica, sans-serif, Arial;
-  top: 225px;
+  top: 50%;
   left: -999px;
   text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black; 
 }
@@ -63,7 +64,7 @@ html, body {
   z-index: 1;
   color: red;
   font-family: Helvetica, sans-serif, Arial;
-  top: 100px;
+  top: 50%;
   left: -999px;
   text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black; 
 
@@ -78,6 +79,9 @@ html, body {
   border: 1px solid black;
 }
 
+menu-btn{
+  border-radius: 50%;
+}
 .possible-move-indicator{
   height: 60px;
   width: 60px;
