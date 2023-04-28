@@ -9,8 +9,38 @@
 </head>
 
 <body>
-  <div id="contentDisplay">
-    <div id="chessBoardDisplay" style="width: 500px"></div>
+  <div id="contentDisplay" style="display: flex; flex-direction:column; align-items:center">
+    <div id="promotion-display" style="width:450px;height:250px;background-color:papayawhip; display:none">
+      <h1 style="text-align: center; font-type:Helvetica">Promotion</h1>
+      <p style="text-align:center">Choose your promotion piece:</p>
+      <div style="display:flex; flex-direction: row; column-gap: 20px;">
+        <button onclick="promotionClickHandler('Queen')"> <img src="./sprites/queenw.png" width="60px" height="60px"> </button>
+        <button onclick="promotionClickHandler('Rook')"> <img src="./sprites/rookw.png" width="60px" height="60px"> </button>
+        <button onclick="promotionClickHandler('Bishop')"> <img src="./sprites/bishopw.png" width="60px" height="60px"> </button>
+        <button onclick="promotionClickHandler('Knight')"> <img src="./sprites/knightw.png" width="60px" height="60px"> </button>
+
+      </div>
+    </div>
+        <div id="chessBoardDisplay" style="width: 500px;">
+          <div class="checkPromptWhite">
+            <h1 >White is in check!</h1>
+          </div>
+          <div class="checkmatePromptWhite">
+            <h1 >White is in checkmate!</h1>
+          </div>
+          <div class="checkmatePromptBlack">
+            <h1 >Black is in checkmate!</h1>
+          </div>
+          <div class="checkPromptBlack">
+            <h1>Black is in check!</h1>
+          </div>
+
+          <div class="stalematePrompt">
+            <h1>Stalemale!</h1>
+          </div>
+          
+        </div>
+
   </div>
   <!--
   This script places a badge on your repl's full-browser view back to your repl's cover
@@ -19,6 +49,7 @@
   -->
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
   <script src="main.js"></script>
+  <script  type="module" src="./modules/AI.js"></script>
 
 </body>
 
